@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from order.services import OrderService
 from order import serializers as orderSz
 from api.permissions import IsSellerOrAdmin
@@ -7,7 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
-from order.models import Wishlist, Cart, CartItem, Order
+from order.models import Wishlist, Cart, CartItem, Order, OrderItem
 from order.endpoints import OrderEndpoints, CartEndpoints, WishlistEndpoints
 from order.serializers import WishlistSerializer, CartSerializer, CartItemSerializer,AddCartItemSerializer, UpdateCartItemSerializer, EmptySerializer
 
@@ -120,7 +121,9 @@ class OrderViewset(ModelViewSet):
         if self.request.user.is_staff:
             return Order.objects.prefetch_related('items__product').all()
         if self.request.user.groups.filter(name="Seller").exists():
-            return Order.objects.prefetch_related('items__product').filter(items__product__seller=self.request.user).distinct()
+            seller_items = OrderItem.objects.filter(product__seller=self.request.user)
+            return (Order.objects.filter(items__product__seller=self.request.user)
+                .prefetch_related(Prefetch('items', queryset=seller_items.prefetch_related('product'))).distinct())
         return Order.objects.prefetch_related('items__product').filter(user=self.request.user)
     
     def get_serializer_context(self):
