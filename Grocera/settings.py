@@ -83,7 +83,8 @@ WSGI_APPLICATION = 'Grocera.wsgi.app'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
-    ]
+]
+
 
 
 # DATABASES = {
