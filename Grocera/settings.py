@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'drf_yasg',
     'django_filters',
+    "corsheaders",
     'rest_framework',
     'djoser',
     'api',
@@ -49,6 +50,7 @@ INTERNAL_IPS = [
 
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -79,7 +81,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Grocera.wsgi.app'
 
-
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    ]
 
 
 # DATABASES = {
