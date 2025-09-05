@@ -1,6 +1,7 @@
 from django.db.models import Prefetch
 from order.services import OrderService
 from order import serializers as orderSz
+from rest_framework.views import APIView
 from api.permissions import IsSellerOrAdmin
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -182,3 +183,11 @@ class OrderViewset(ModelViewSet):
 
 
 
+class HasOrderedProduct(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, product_id):
+        user = request.user
+        has_ordered = OrderItem.objects.filter(order__user=user, product_id=product_id).exists()
+        return Response({"hasOrdered": has_ordered})
+    

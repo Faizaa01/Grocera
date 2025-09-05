@@ -1,7 +1,7 @@
 from django.urls import path,include
 from rest_framework_nested import routers
 from product.views import ProductViewSet, ProductImageViewSet, CategoryViewSet, ReviewViewSet
-from order.views import WishlistViewSet, CartViewSet, CartItemViewSet, OrderViewset
+from order.views import WishlistViewSet, CartViewSet, CartItemViewSet, OrderViewset, HasOrderedProduct
 from users.views import DepositViewSet, DashboardView
 
 
@@ -12,7 +12,6 @@ router.register('Wishlist', WishlistViewSet, basename='wishlist')
 router.register('cart', CartViewSet, basename='cart')
 router.register('orders', OrderViewset, basename='orders')
 router.register('deposits', DepositViewSet, basename='deposit')
-
 
 product_router = routers.NestedDefaultRouter(router, 'products', lookup='product')
 product_router.register('reviews', ReviewViewSet, basename='product-review')
@@ -34,4 +33,5 @@ urlpatterns = [
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+    path('orders/has-ordered/<int:product_id>/', HasOrderedProduct.as_view()),
 ]
