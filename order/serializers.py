@@ -1,7 +1,7 @@
 from product.models import Product
 from rest_framework import serializers
 from order.services import OrderService
-from product.serializers import ProductSerializer
+from product.serializers import ProductSerializer, ProductImageSerializer
 from order.emails import send_order_confirmation_email
 from order.models import  Order, OrderItem, Wishlist, Cart, CartItem
 
@@ -21,9 +21,11 @@ class WishlistSerializer(serializers.ModelSerializer):
 
 
 class SimpleProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True)
     class Meta:
         model = Product
-        fields = ['id', 'name', 'price']
+        fields = ['id', 'name', 'price', 'images']
+
 
 
 class CartItemSerializer(serializers.ModelSerializer):
