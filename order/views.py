@@ -121,7 +121,7 @@ class OrderViewset(ModelViewSet):
             return Order.objects.none()
         if self.request.user.is_staff:
             return Order.objects.prefetch_related('items__product').all()
-        if self.request.user.groups.filter(name="Seller").exists():
+        if self.request.user.groups.filter(name="seller").exists():
             seller_items = OrderItem.objects.filter(product__seller=self.request.user)
             return (Order.objects.filter(items__product__seller=self.request.user)
                 .prefetch_related(Prefetch('items', queryset=seller_items.prefetch_related('product'))).distinct())

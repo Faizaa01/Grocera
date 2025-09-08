@@ -12,7 +12,7 @@ class IsReviewWriterOrReadonly(permissions.BasePermission):
             return True
         if request.user.is_staff:
             return True
-        if request.user.groups.filter(name="Seller").exists():
+        if request.user.groups.filter(name="seller").exists():
             return True
         return obj.user == request.user
 

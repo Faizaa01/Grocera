@@ -33,7 +33,7 @@ class ProductViewSet(ModelViewSet):
         queryset = Product.objects.all()
         category_id = self.kwargs.get('category_pk')
 
-        if self.request.user.groups.filter(name='Seller').exists():
+        if self.request.user.groups.filter(name='seller').exists():
             queryset = queryset.filter(seller=self.request.user)
         if category_id:
             queryset = queryset.filter(category_id=category_id)

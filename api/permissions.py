@@ -11,7 +11,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 class IsSellerOrAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == 'POST':
-            return request.user and request.user.is_authenticated and (request.user.is_staff or request.user.groups.filter(name='Seller').exists())
+            return request.user and request.user.is_authenticated and (request.user.is_staff or request.user.groups.filter(name='seller').exists())
         return True
 
     def has_object_permission(self, request, view, obj):
