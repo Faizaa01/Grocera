@@ -38,10 +38,10 @@ class DashboardView(APIView):
     )
     def get(self, request):
         user = request.user
-        seller_group = Group.objects.get(name='Seller')
+        seller_group = Group.objects.get(name='seller')
 
         total_users = User.objects.count()
-        total_sellers = User.objects.filter(groups__name='Seller').count()
+        total_sellers = User.objects.filter(groups__name='seller').count()
 
         if user.is_staff:
             total_products = Product.objects.count()
