@@ -1,9 +1,9 @@
 from product.models import Product
 from rest_framework import serializers
 from order.services import OrderService
-from product.serializers import ProductSerializer, ProductImageSerializer
 from order.emails import send_order_confirmation_email
 from order.models import  Order, OrderItem, Wishlist, Cart, CartItem
+from product.serializers import ProductSerializer, ProductImageSerializer
 
 
 class WishlistSerializer(serializers.ModelSerializer):

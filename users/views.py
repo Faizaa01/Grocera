@@ -15,7 +15,9 @@ from django.shortcuts import HttpResponseRedirect
 from django.conf import settings as main_settings
 from rest_framework.permissions import IsAuthenticated
 from users.serializers import UserSerializer, DepositSerializer
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
@@ -29,7 +31,6 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 class DashboardView(APIView):
     permission_classes = [IsAuthenticated]
 
-    
     @swagger_auto_schema(
         operation_summary="Retrieve dashboard data tailored for Admin/Seller.",
         operation_description="Returns dashboard info specific to the user's role (admin or seller).",
@@ -38,6 +39,9 @@ class DashboardView(APIView):
     def get(self, request):
         user = request.user
         seller_group = Group.objects.get(name='Seller')
+
+        total_users = User.objects.count()
+        total_sellers = User.objects.filter(groups__name='Seller').count()
 
         if user.is_staff:
             total_products = Product.objects.count()
@@ -48,6 +52,8 @@ class DashboardView(APIView):
                 'role': 'admin',
                 'total_products': total_products,
                 'total_orders': total_orders,
+                'total_users': total_users,
+                'total_sellers': total_sellers,
                 'products': list(products),
             })
 
@@ -65,6 +71,7 @@ class DashboardView(APIView):
                 'total_products': total_products,
                 'total_sales': total_sales,
                 'total_revenue': total_revenue,
+                'total_users': total_users,
                 'products': list(seller_products.values('id', 'name', 'stock')),
             })
 
@@ -74,7 +81,6 @@ class DashboardView(APIView):
 
 
 class DepositViewSet(ModelViewSet):
-
     serializer_class = DepositSerializer
     permission_classes = [permissions.IsAuthenticated]
 
