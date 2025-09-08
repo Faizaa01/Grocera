@@ -13,10 +13,11 @@ class UserSerializer(BaseUserSerializer):
     balance = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     wishlist_items = WishlistSerializer(many=True, read_only=True)
     orders = OrderSerializer(many=True, read_only=True)
+    groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
 
     class Meta(BaseUserSerializer.Meta):
         ref_name = 'CustomUser'
-        fields = ['id', 'email', 'first_name', 'last_name', 'address', 'phone_number', 'balance','wishlist_items', 'orders', 'is_staff']
+        fields = ['id', 'email', 'first_name', 'last_name', 'address', 'phone_number', 'balance','wishlist_items', 'orders', 'is_staff', 'groups']
         read_only_fields = ['is_staff']
         
 
