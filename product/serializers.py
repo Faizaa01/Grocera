@@ -53,10 +53,12 @@ class ReviewSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True)
+    category = CategorySerializer(read_only=True)
+    seller = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = Product
-        fields = ['id', 'name','description', 'images','price','stock','category','reviews']
+        fields = ['id', 'name','description', 'images','price','stock','category','reviews', 'seller']
 
     def validate_price(self, price):
         if price < 0:
