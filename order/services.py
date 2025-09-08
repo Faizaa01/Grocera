@@ -1,4 +1,4 @@
-from users.models import User
+from users.models import User, Deposit
 from django.db import transaction
 from order.models import Cart, OrderItem, Order
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -20,6 +20,12 @@ class OrderService:
             
             user.balance -= total_price
             user.save()
+            Deposit.objects.create(
+                user=user,
+                amount=-total_price,
+                status='order_placed',
+                transaction_reference=f"order_{cart_id}"
+            )
 
             order = Order.objects.create(user_id=user_id, total_price=total_price)
             order_items = []
@@ -38,7 +44,7 @@ class OrderService:
                 item.product.save()
 
             OrderItem.objects.bulk_create(order_items)
-            cart.delete()
+            cart.items.all().delete()
             return order
 
     @staticmethod
