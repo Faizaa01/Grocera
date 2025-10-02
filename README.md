@@ -57,7 +57,7 @@ It includes JWT authentication, role-based access, and auto-generated API docume
    DEBUG=True
    DATABASE_URL=your_database_url
    ALLOWED_HOSTS=*
-   EMAIL_HOST
+   EMAIL_HOST=your_email_host
    ```
 
 5. **Apply migrations**
