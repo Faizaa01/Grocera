@@ -8,9 +8,9 @@ from product.paginations import DefaultPagination
 from rest_framework.exceptions import PermissionDenied
 from product.permissions import IsReviewWriterOrReadonly
 from django_filters.rest_framework import DjangoFilterBackend
-from api.permissions import IsAdminOrReadOnly, IsSellerOrAdmin
 from rest_framework.filters import SearchFilter, OrderingFilter
 from product.models import Product, ProductImage, Category, Review
+from api.permissions import IsAdminOrReadOnly, IsSellerOrAdmin, IsSeller
 from product.endpoints import CategoryEndpoints, ProductEndpoints, ReviewEndpoints, ProductImageEndpoints
 from product.serializers import CategorySerializer, ProductSerializer, ProductImageSerializer, ReviewSerializer
 
@@ -24,7 +24,9 @@ class ProductViewSet(ModelViewSet):
     ordering_fields = ['price', 'updated_at','name']
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+        if self.action in ['create']:
+            return [IsSeller()]
+        if self.action in ['update', 'partial_update', 'destroy']:
             return [IsSellerOrAdmin()]
         return [AllowAny()]
     
@@ -73,7 +75,7 @@ class ProductImageViewSet(ModelViewSet):
     
     def perform_create(self, serializer):
         product = Product.objects.get(pk=self.kwargs.get('product_pk'))
-        if not (self.request.user.is_staff or product.seller==self.request.user):
+        if not (product.seller==self.request.user):
             raise PermissionDenied("You can't add images to this product.")
         serializer.save(product=product)
 

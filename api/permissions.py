@@ -21,4 +21,13 @@ class IsSellerOrAdmin(permissions.BasePermission):
             return True
         return getattr(obj, 'seller', None) == request.user
 
-    
+
+class IsSeller(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        if request.method == 'POST':
+            return (request.user.is_authenticated and request.user.groups.filter(name='seller').exists())
+        return False
+
