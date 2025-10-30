@@ -10,9 +10,13 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 
 class IsSellerOrAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
         if request.method == 'POST':
-            return request.user and request.user.is_authenticated and (request.user.is_staff or request.user.groups.filter(name='seller').exists())
-        return True
+            return False
+        if request.method in ['PUT', 'PATCH', 'DELETE']:
+            return request.user.is_authenticated
+        return False
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
@@ -30,4 +34,5 @@ class IsSeller(permissions.BasePermission):
         if request.method == 'POST':
             return (request.user.is_authenticated and request.user.groups.filter(name='seller').exists())
         return False
+
 
